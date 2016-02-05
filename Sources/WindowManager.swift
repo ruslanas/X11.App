@@ -15,8 +15,6 @@ class WindowManager {
 	var width:UInt32 = 200
 	var height:UInt32 = 100
 
-	var stop = false
-	
 	var rootWindow:UInt
 	var w:Window
 	var d:_XPrivDisplay
@@ -38,10 +36,6 @@ class WindowManager {
 	}
 
 	func redraw() {
-		if stop {
-			return
-		}
-
 		// Expose
 		let e:UnsafeMutablePointer<_XEvent> = UnsafeMutablePointer<_XEvent>.alloc(1)
 		e.memory.type = Expose
@@ -54,7 +48,7 @@ class WindowManager {
 
 	    let q = dispatch_queue_create("lt.wri.queue.ui", nil)
 
-		XSelectInput(d, w, ExposureMask | KeyPressMask)
+		XSelectInput(d, w, ExposureMask | KeyPressMask | ButtonPressMask)
 		XMapWindow(d, w)
 
 	    dispatch_async(q) {
@@ -66,11 +60,10 @@ class WindowManager {
 	}
 
 	func close() {
-
-		XFreeGC(d, s.memory.default_gc)
+		//XFreeGC(d, s.memory.default_gc)
 		XDestroyWindow(d, w)
-		// XCloseDisplay(d) // segfault
-		stop = true
+		XCloseDisplay(d)
+		exit(1)
 	}
 
 	func link(widget: Widget) {
@@ -80,23 +73,37 @@ class WindowManager {
 
 	func loop() {
 
-		loop: while !stop {
+		loop: while true {
 
 			XNextEvent(d, e)
 			XClearWindow(d, w)
 
-			switch e.memory.type {
+			let event = e.memory
+
+			switch event.type {
 			case Expose:
 
 				for wgt in widgets {
 					(wgt as! Drawable).draw()	
 				}
-
+				redraw()
 				break
 
 			case KeyPress:
 				close()
 				break loop
+
+			case ButtonPress:
+				for wgt in widgets {
+					let x = Int(event.xbutton.x)
+					let y = Int(event.xbutton.y)
+
+					if x > wgt.x && x < wgt.width + wgt.x && wgt.y < y && wgt.height + wgt.y > y {
+						wgt.onClick(x, y)
+						break
+					}
+				}
+				break
 			
 			default: fatalError("Unknown Event")
 			

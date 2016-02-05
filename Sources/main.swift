@@ -8,27 +8,17 @@ import Foundation
 XInitThreads();
 
 let wm = WindowManager()
-let app = App()
-
 wm.launch()
 
-app.run {
-    var clock = Label(20, 50)
-    var label = Label(20, 40)
-    label.value = "The Clock"
+var clock = Clock(20, 50)
+var label = Label(20, 40)
+label.value = "UTC"
 
-    wm.link(clock)
-    wm.link(label)
-
-    while !wm.stop {
-        sleep(1)
-        let time = NSDate()
-        clock.value = time.description
-        wm.redraw()
-    }
-
-    print("Application stopped")
-    exit(0)
+clock.addEventListener("click") { (x, y) -> Void in
+    print("\(x);\(y)")
 }
+
+wm.link(clock)
+wm.link(label)
 
 dispatch_main()
