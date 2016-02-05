@@ -1,9 +1,15 @@
-class Widget {
-	var x: Int
-	var y: Int
+// @author Ruslanas Balčiūnas <ruslanas.com@gmail.com>
 
-	init() {
-		x = 0
-		y = 0
+class Widget {
+
+	var x: Int = 0
+	var y: Int = 0
+	var width: Int = 200
+	var height: Int = 200
+	var value = "___"
+
+	init(_ x: Int, _ y: Int) {
+		self.x = x
+		self.y = y
 	}
 }

@@ -1,23 +1,31 @@
 // Swift X11 libdispatch experiment on Linux
 // @author Ruslanas Balčiūnas <ruslanas.com@gmail.com>
 
+import R.Xlib
 import Dispatch
 import Foundation
+
+XInitThreads();
 
 let wm = WindowManager()
 let app = App()
 
 wm.launch()
-app.run {
-    let w = Widget()
-    wm.widgets.append(w)
 
-    while true {
+app.run {
+    var widget = Widget(20, 50)
+
+    wm.widgets.append(widget)
+
+    while !wm.stop {
         sleep(1)
-        w.x = random() % 200
-        w.y = random() % 200
+        let time = NSDate()
+        widget.value = time.description
         wm.redraw()
     }
+
+    print("Application stopped")
+    exit(0)
 }
 
 dispatch_main()
