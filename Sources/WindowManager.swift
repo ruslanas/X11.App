@@ -73,6 +73,11 @@ class WindowManager {
 		stop = true
 	}
 
+	func link(widget: Widget) {
+		widget.windowManager = self
+		self.widgets.append(widget)
+	}
+
 	func loop() {
 
 		loop: while !stop {
@@ -83,10 +88,8 @@ class WindowManager {
 			switch e.memory.type {
 			case Expose:
 
-				for wgt in widgets {	
-					XDrawString(
-						d, w, s.memory.default_gc,
-						Int32(wgt.x), Int32(wgt.y), wgt.value, Int32(wgt.value.characters.count)) 
+				for wgt in widgets {
+					(wgt as! Drawable).draw()	
 				}
 
 				break

@@ -13,14 +13,17 @@ let app = App()
 wm.launch()
 
 app.run {
-    var widget = Widget(20, 50)
+    var clock = Label(20, 50)
+    var label = Label(20, 40)
+    label.value = "The Clock"
 
-    wm.widgets.append(widget)
+    wm.link(clock)
+    wm.link(label)
 
     while !wm.stop {
         sleep(1)
         let time = NSDate()
-        widget.value = time.description
+        clock.value = time.description
         wm.redraw()
     }
 
