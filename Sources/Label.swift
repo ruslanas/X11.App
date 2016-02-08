@@ -4,11 +4,11 @@
 
 class Label:Widget {
 	var value = "___"
-}
-
-extension Label:Drawable {
-	func draw() {
+	var border = true
+	override func draw() {
 		drawString(x, y, value)
-		drawBorder()
+		if border {
+			drawBorder(x, y, width, height)
+		}
 	}
 }

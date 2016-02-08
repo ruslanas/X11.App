@@ -11,17 +11,18 @@ class WindowManager {
 	var widgets: [Widget] = []
 
 	let title = "Window"
-	
-	var width:UInt32 = 200
-	var height:UInt32 = 100
+
+	var width:Int = 200
+	var height:Int = 100
 
 	var rootWindow:UInt
 	var w:Window
 	var d:_XPrivDisplay
 	var e:UnsafeMutablePointer<_XEvent> = UnsafeMutablePointer<_XEvent>.alloc(1)
 	var s:UnsafeMutablePointer<Screen>
-	
+
 	init() {
+
 		d = XOpenDisplay(nil)
 		if d == nil {
 			fatalError("cannot open display")
@@ -30,7 +31,7 @@ class WindowManager {
 		s = XDefaultScreenOfDisplay(d)
 		rootWindow = s.memory.root
 		w = XCreateSimpleWindow(
-			d, rootWindow, 10, 10, width, height, 2,
+			d, rootWindow, 10, 10, UInt32(width), UInt32(height), 2,
 			s.memory.black_pixel, s.memory.white_pixel)
 
 	}
@@ -46,16 +47,10 @@ class WindowManager {
 
 	func launch() {
 
-	    let q = dispatch_queue_create("lt.wri.queue.ui", nil)
-
 		XSelectInput(d, w, ExposureMask | KeyPressMask | ButtonPressMask)
 		XMapWindow(d, w)
 
-	    dispatch_async(q) {
-	        self.loop()
-	    }
-
-	    print("Window launched")
+    	self.loop()
 
 	}
 
@@ -84,7 +79,7 @@ class WindowManager {
 			case Expose:
 
 				for wgt in widgets {
-					(wgt as! Drawable).draw()	
+					wgt.draw()
 				}
 				redraw()
 				break
@@ -104,9 +99,9 @@ class WindowManager {
 					}
 				}
 				break
-			
+
 			default: fatalError("Unknown Event")
-			
+
 			}
 
 		}

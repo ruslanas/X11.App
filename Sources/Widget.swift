@@ -2,17 +2,12 @@
 
 import R.Xlib
 
-protocol Drawable {
-	func draw()
-}
+class Widget:Painter {
 
-class Widget {
-
-	var windowManager = WindowManager()
 	var x: Int = 0
 	var y: Int = 0
-	var width: Int = 100
-	var height: Int = 10
+	var width: Int = 80
+	var height: Int = 80
 	var listeners: [String: (Int, Int) -> Void] = [:]
 
 	init(_ x: Int, _ y: Int) {
@@ -30,15 +25,4 @@ class Widget {
 		listeners[type] = handler
 	}
 
-	func drawBorder() {
-		XDrawRectangle(
-			windowManager.d, windowManager.w, windowManager.s.memory.default_gc,
-			Int32(x), Int32(y), UInt32(width), UInt32(height))
-	}
-
-	func drawString(x: Int, _ y: Int, _ value: String) {
-		XDrawString(
-			windowManager.d, windowManager.w, windowManager.s.memory.default_gc,
-			Int32(x), Int32(y + height), value, Int32(value.characters.count)) 
-	}
 }
