@@ -3,7 +3,6 @@
 
 import R.Xlib
 import R.X
-import Dispatch
 import Foundation
 
 class WindowManager {
@@ -71,17 +70,17 @@ class WindowManager {
 		loop: while true {
 
 			XNextEvent(d, e)
-			XClearWindow(d, w)
-
 			let event = e.memory
 
 			switch event.type {
 			case Expose:
 
+				XClearWindow(d, w)
+
 				for wgt in widgets {
 					wgt.draw()
 				}
-				redraw()
+
 				break
 
 			case KeyPress:

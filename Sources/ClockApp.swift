@@ -18,5 +18,16 @@ class ClockApp:App {
         label.value = "El Clocko"
         label.border = false
         windowManager.link(label)
+        let q = dispatch_queue_create("lt.wri.queue.tick", nil)
+		dispatch_async(q) {
+			let timer = NSTimer.scheduledTimer(0.5, repeats: true) {
+				timer in
+				self.windowManager.redraw()
+			}
+
+			let tick = NSRunLoop.currentRunLoop()
+			tick.addTimer(timer, forMode: NSDefaultRunLoopMode)
+			tick.run()
+		}
     }
 }
